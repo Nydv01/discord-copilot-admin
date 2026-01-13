@@ -29,24 +29,28 @@ export default function Login() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    try {
-      const response = await signIn(email, password);
-      const error = response?.error;
+  try {
+    await signIn(email, password);
 
-      if (error) {
-        toast({
-          title: 'Access denied',
-          description: error.message,
-          variant: 'destructive',
-        });
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    toast({
+      title: "Signed in",
+      description: "Welcome back 👋",
+    });
+  } catch (err: any) {
+    toast({
+      title: "Access denied",
+      description:
+        err?.message ?? "Invalid email or password",
+      variant: "destructive",
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
