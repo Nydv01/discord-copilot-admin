@@ -219,16 +219,22 @@ async function callAI(systemPrompt, userMessage, memory) {
 client.on(Events.MessageCreate, async (message) => {
   if (message.author.bot) return;
 
-  let config;
-  try {
-    config = await loadBotConfig();
-  } catch (err) {
-    registerError(err);
+  console.log("MESSAGE RECEIVED:", {
+    content: message.content,
+    channel: message.channelId,
+    author: message.author.username
+  });
+
+  if (message.content.toLowerCase().includes("hello")) {
+    await message.reply("👋 Hello! Bot is alive.");
     return;
   }
 
-  const isMentioned = message.mentions.has(client.user);
-  const isAllowedChannel = config.allowedChannels.includes(message.channel.id);
+  try {
+    const config = await loadBotConfig();
+
+    const isMentioned = message.mentions.has(client.user);
+    const isAllowedChannel = config.allowedChannels.includes(message.channel.id);
 
   if (!isMentioned && !isAllowedChannel) return;
 
