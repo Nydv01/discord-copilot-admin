@@ -63,8 +63,10 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
-  ],
+    GatewayIntentBits.GuildMembers
+  ]
 });
+
 
 /* ===========================
    ERROR TRACKER
@@ -299,4 +301,5 @@ process.on("SIGTERM", async () => {
 /* ===========================
    LOGIN
 =========================== */
-client.login(DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN);
+

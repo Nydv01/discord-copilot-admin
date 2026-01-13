@@ -24,8 +24,10 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
-  ],
+    GatewayIntentBits.GuildMembers
+  ]
 });
+
 
 // AI Provider abstraction
 async function callAI(systemPrompt, userMessage, context) {
@@ -142,7 +144,8 @@ client.once(Events.ClientReady, (c) => {
   console.log(\`✅ Bot ready! Logged in as \${c.user.tag}\`);
 });
 
-client.login(DISCORD_TOKEN);`;
+client.login(process.env.DISCORD_TOKEN);
+`;
 
 const PACKAGE_JSON = `{
   "name": "discord-copilot-bot",
