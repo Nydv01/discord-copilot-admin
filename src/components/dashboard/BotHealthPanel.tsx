@@ -74,9 +74,13 @@ export default function BotHealthPanel() {
   if (!health) return "offline";
 
   const diff =
-    health.last_ping
-      ? Date.now() - new Date(health.last_ping).getTime()
-      : Infinity;
+  health?.last_ping
+    ? Math.max(
+        0,
+        Date.now() - new Date(health.last_ping).getTime()
+      )
+    : Infinity;
+
 
   if (health.is_online === true && diff < 300_000) {
     return diff < 120_000 ? "online" : "degraded";
@@ -160,8 +164,14 @@ useEffect(() => {
       ? "text-yellow-600"
       : "text-destructive";
 
-  const formatDate = (v?: string | null) =>
-    v ? new Date(v).toLocaleString() : "—";
+  const formatDate = (v?: string | null) => {
+  if (!v) return "—";
+  return new Date(v).toLocaleString(undefined, {
+    dateStyle: "medium",
+    timeStyle: "medium",
+  });
+};
+
 
   /* ===========================
      RENDER STATES
@@ -274,6 +284,10 @@ useEffect(() => {
         <p className="text-xs text-muted-foreground">
           💡 Metrics update every 30 seconds. Confidence is heuristic-based.
         </p>
+        <p className="text-[11px] text-muted-foreground">
+  🕒 All timestamps shown in your local timezone
+</p>
+
       </CardContent>
     </Card>
   );

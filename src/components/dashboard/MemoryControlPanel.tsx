@@ -111,8 +111,14 @@ export default function MemoryControlPanel() {
     setResetting(false);
   };
 
-  const formatDate = (date?: string) =>
-    date ? new Date(date).toLocaleString() : "Never";
+  const formatDate = (v?: string | null) => {
+  if (!v) return "—";
+  return new Date(v).toLocaleString(undefined, {
+    dateStyle: "medium",
+    timeStyle: "medium",
+  });
+};
+
 
   /* =====================
      LOADING
