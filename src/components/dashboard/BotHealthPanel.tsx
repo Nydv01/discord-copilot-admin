@@ -100,11 +100,15 @@ export default function BotHealthPanel() {
 
 
   const heartbeatAgeSec = useMemo(() => {
-    if (!health?.last_ping) return null;
-    return Math.floor(
-      (Date.now() - new Date(health.last_ping).getTime()) / 1000
-    );
-  }, [health?.last_ping]);
+  if (!health?.last_ping) return null;
+
+  const diffMs = Math.abs(
+    Date.now() - new Date(health.last_ping).getTime()
+  );
+
+  return Math.floor(diffMs / 1000);
+}, [health?.last_ping]);
+
 
   const cacheFresh = useMemo(() => {
     if (!health) return false;

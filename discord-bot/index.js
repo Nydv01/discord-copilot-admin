@@ -20,9 +20,14 @@ const AI_API_KEY = process.env.AI_API_KEY;
 const AI_PROVIDER = process.env.AI_PROVIDER || "openai";
 const BOT_API_URL = process.env.BOT_API_URL;
 
-if (!DISCORD_TOKEN || !AI_API_KEY || !BOT_API_URL) {
-  throw new Error("❌ Missing required environment variables");
+if (!DISCORD_TOKEN || !BOT_API_URL) {
+  throw new Error("❌ Missing critical bot environment variables");
 }
+
+if (!AI_API_KEY) {
+  console.warn("⚠️ AI_API_KEY not found at startup, AI calls will fail");
+}
+
 
 /* ===========================
    CACHE
