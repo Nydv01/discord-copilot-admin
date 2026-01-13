@@ -95,21 +95,34 @@ async function loadBotConfig() {
 
   HEALTH.cacheMisses++;
 
-  const res = await fetch(`${BOT_API_URL}?action=config`, {
-    agent: httpsAgent,
-  });
+  try {
+    const res = await fetch(`${BOT_API_URL}?action=config`, {
+      agent: httpsAgent,
+      timeout: 5000,
+    });
 
-  if (!res.ok) throw new Error("Failed to fetch bot config");
+    if (!res.ok) throw new Error(`Config API ${res.status}`);
 
-  const json = await res.json();
+    const json = await res.json();
 
-  CACHE.instructions = json.instructions;
-  CACHE.allowedChannels = json.allowedChannels;
-  CACHE.memory = json.memory;
-  CACHE.lastFetch = now;
+    CACHE.instructions = json.instructions || "You are a helpful Discord bot.";
+    CACHE.allowedChannels = json.allowedChannels || [];
+    CACHE.memory = json.memory || null;
+    CACHE.lastFetch = now;
 
-  return CACHE;
+    return CACHE;
+  } catch (err) {
+    registerError(err);
+
+    // 🔴 FALLBACK CONFIG (THIS SAVES YOU)
+    return {
+      instructions: "You are a helpful Discord bot.",
+      allowedChannels: [],
+      memory: null,
+    };
+  }
 }
+
 
 /* ===========================
    MEMORY UPDATE
