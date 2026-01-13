@@ -238,18 +238,15 @@ async function callAI(systemPrompt, userMessage, memory) {
    MESSAGE HANDLER
 =========================== */
 client.on(Events.MessageCreate, async (message) => {
+  console.log("RAW MESSAGE EVENT");
+
   if (message.author.bot) return;
 
-  console.log("MESSAGE RECEIVED:", {
-    content: message.content,
-    channel: message.channelId,
-    author: message.author.username
-  });
+  console.log("MESSAGE:", message.content);
 
-  if (message.content.toLowerCase().includes("hello")) {
-    await message.reply("👋 Hello! Bot is alive.");
-    return;
-  }
+  await message.reply("✅ I received your message");
+});
+
 
   try {
     let config;
