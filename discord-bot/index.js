@@ -2,8 +2,12 @@
 // Uses Bot Config API (NO direct Supabase access)
 
 require("dotenv").config();
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
+
 const https = require("https");
 const { Client, GatewayIntentBits, Events } = require("discord.js");
+
 
 /* ===========================
    HTTPS AGENT (TLS FIX)
@@ -125,8 +129,12 @@ async function updateMemory(summary, messageCount) {
     CACHE.memory = { summary, message_count: messageCount };
   } catch (err) {
     registerError(err);
+    console.error("⚠️ Failed to update memory:", err.message);
   }
 }
+
+
+
 
 /* ===========================
    HEALTH REPORTER
@@ -231,17 +239,26 @@ client.on(Events.MessageCreate, async (message) => {
   }
 
   try {
-    const config = await loadBotConfig();
+    let config;
+    try {
+      config = await loadBotConfig();
+    } catch (err) {
+      registerError(err);
+      config = {
+        instructions: "You are a helpful Discord bot.",
+        allowedChannels: [],
+        memory: null,
+      };
+    }
 
     const isMentioned = message.mentions.has(client.user);
     const isAllowedChannel = config.allowedChannels.includes(message.channel.id);
 
-  if (!isMentioned && !isAllowedChannel) return;
+    if (!isMentioned && !isAllowedChannel) return;
 
-  const content = message.content.replace(/<@!?\d+>/g, "").trim();
-  if (!content) return;
+    const content = message.content.replace(/<@!?\d+>/g, "").trim();
+    if (!content) return;
 
-  try {
     await message.channel.sendTyping();
 
     const reply = await callAI(
